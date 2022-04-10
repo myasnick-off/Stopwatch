@@ -32,7 +32,9 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initTimer1()
+        initTimer2()
+        initSuperButtons()
     }
 
     override fun onDestroyView() {
@@ -40,28 +42,69 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    private fun initView() {
+    private fun initTimer1() {
 
-        viewModel.ticker
+        viewModel.tickerList[FIRST_TIMER]
             .onEach { time ->
-                binding.textTime.text = time
+                binding.timer1.textTime.text = time
             }
             .launchIn(CoroutineScope(Dispatchers.Main))
 
-        binding.buttonStart.setOnClickListener {
-            viewModel.start()
+        binding.timer1.buttonStart.setOnClickListener {
+            viewModel.start(FIRST_TIMER)
         }
 
-        binding.buttonPause.setOnClickListener {
-            viewModel.pause()
+        binding.timer1.buttonPause.setOnClickListener {
+            viewModel.pause(FIRST_TIMER)
         }
 
-        binding.buttonStop.setOnClickListener {
-            viewModel.stop()
+        binding.timer1.buttonStop.setOnClickListener {
+            viewModel.stop(FIRST_TIMER)
+        }
+    }
+
+    private fun initTimer2() {
+
+        viewModel.tickerList[SECOND_TIMER]
+            .onEach { time ->
+                binding.timer2.textTime.text = time
+            }
+            .launchIn(CoroutineScope(Dispatchers.Main))
+
+        binding.timer2.buttonStart.setOnClickListener {
+            viewModel.start(SECOND_TIMER)
+        }
+
+        binding.timer2.buttonPause.setOnClickListener {
+            viewModel.pause(SECOND_TIMER)
+        }
+
+        binding.timer2.buttonStop.setOnClickListener {
+            viewModel.stop(SECOND_TIMER)
+        }
+    }
+
+    private fun initSuperButtons() {
+        binding.superButtonStart.setOnClickListener {
+            viewModel.start(FIRST_TIMER)
+            viewModel.start(SECOND_TIMER)
+        }
+
+        binding.superButtonPause.setOnClickListener {
+            viewModel.pause(FIRST_TIMER)
+            viewModel.pause(SECOND_TIMER)
+        }
+
+        binding.superButtonStop.setOnClickListener {
+            viewModel.stop(FIRST_TIMER)
+            viewModel.stop(SECOND_TIMER)
         }
     }
 
     companion object {
+        private const val FIRST_TIMER = 0
+        private const val SECOND_TIMER = 1
+
         fun newInstance() = MainFragment()
     }
 }

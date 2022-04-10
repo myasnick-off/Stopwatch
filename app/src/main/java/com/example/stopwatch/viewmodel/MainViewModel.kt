@@ -7,45 +7,58 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class MainViewModel(private val timerStateHolder: StateHolder) : ViewModel() {
+class MainViewModel(
+    timerStateHolder1: StateHolder,
+    timerStateHolder2: StateHolder
+    ) : ViewModel() {
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-    private var job: Job? = null
 
-    private val _ticker = MutableStateFlow(TimeFormatter.DEFAULT_TIME)
-    val ticker: StateFlow<String> = _ticker
+    private var job1: Job? = null
+    private var job2: Job? = null
+    private val jobList: Array<Job?> = arrayOf(job1, job2)
 
-    fun start() {
-        if (job == null) startJob()
-        timerStateHolder.start()
+    private val timerStateHolderList: Array<StateHolder> = arrayOf(
+        timerStateHolder1, timerStateHolder2
+    )
+
+    private val _tickerList = arrayOf(
+        MutableStateFlow(TimeFormatter.DEFAULT_TIME),
+        MutableStateFlow(TimeFormatter.DEFAULT_TIME)
+    )
+    val tickerList: Array<StateFlow<String>> = arrayOf(_tickerList[0], _tickerList[1])
+
+    fun start(index: Int) {
+        if (jobList[index] == null) startJob(index)
+        timerStateHolderList[index].start()
     }
 
-    fun pause() {
-        timerStateHolder.pause()
-        stopJob()
+    fun pause(index: Int) {
+        timerStateHolderList[index].pause()
+        stopJob(index)
     }
 
-    fun stop() {
-        timerStateHolder.stop()
-        stopJob()
-        clearValue()
+    fun stop(index: Int) {
+        timerStateHolderList[index].stop()
+        stopJob(index)
+        clearValue(index)
     }
 
-    private fun startJob() {
-        job = scope.launch {
+    private fun startJob(index: Int) {
+        jobList[index] = scope.launch {
             while (isActive) {
-                _ticker.value = timerStateHolder.convertTimeToString()
+                _tickerList[index].value = timerStateHolderList[index].convertTimeToString()
                 delay(20)
             }
         }
     }
 
-    private fun stopJob() {
-        job?.cancel()
-        job = null
+    private fun stopJob(index: Int) {
+        jobList[index]?.cancel()
+        jobList[index] = null
     }
 
-    private fun clearValue() {
-        _ticker.value = TimeFormatter.DEFAULT_TIME
+    private fun clearValue(index: Int) {
+        _tickerList[index].value = TimeFormatter.DEFAULT_TIME
     }
 }

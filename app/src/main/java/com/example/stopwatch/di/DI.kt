@@ -25,6 +25,6 @@ object DI {
         factory<StateHolder> {
             TimerStateHolder(timerStateSetter = get(), timePassedCalculator = get(), timeFormatter = get())
         }
-        viewModel { MainViewModel(timerStateHolder = get()) }
+        viewModel { MainViewModel(timerStateHolder1 = get(), timerStateHolder2 = get()) }
     }
 }
