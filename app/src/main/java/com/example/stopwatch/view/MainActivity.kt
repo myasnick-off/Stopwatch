@@ -1,8 +1,8 @@
-package com.example.stopwatch
+package com.example.stopwatch.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.stopwatch.ui.MainFragment
+import com.example.stopwatch.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

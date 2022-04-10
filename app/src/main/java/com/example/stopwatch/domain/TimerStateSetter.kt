@@ -1,9 +1,10 @@
 package com.example.stopwatch.domain
 
+import com.example.stopwatch.data.ITimerProvider
 import com.example.stopwatch.model.TimerState
 
-class TimerStateCalculator(
-    private val timerProvider: TimerProvider,
+class TimerStateSetter(
+    private val timerProvider: ITimerProvider,
     private val timePassedCalculator: TimePassedCalculator,
 ) {
     fun setRunningState(oldState: TimerState): TimerState.Running =

@@ -1,4 +1,4 @@
-package com.example.stopwatch.domain
+package com.example.stopwatch.utils
 
 class TimeFormatter {
 

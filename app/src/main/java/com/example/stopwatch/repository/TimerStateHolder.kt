@@ -1,12 +1,12 @@
-package com.example.stopwatch.datastore
+package com.example.stopwatch.repository
 
-import com.example.stopwatch.domain.TimeFormatter
+import com.example.stopwatch.utils.TimeFormatter
 import com.example.stopwatch.domain.TimePassedCalculator
-import com.example.stopwatch.domain.TimerStateCalculator
+import com.example.stopwatch.domain.TimerStateSetter
 import com.example.stopwatch.model.TimerState
 
 class TimerStateHolder (
-    private val timerStateCalculator: TimerStateCalculator,
+    private val timerStateSetter: TimerStateSetter,
     private val timePassedCalculator: TimePassedCalculator,
     private val timeFormatter: TimeFormatter,
 ) {
@@ -14,18 +14,18 @@ class TimerStateHolder (
         private set
 
     fun start() {
-        currentState = timerStateCalculator.setRunningState(currentState)
+        currentState = timerStateSetter.setRunningState(currentState)
     }
 
     fun pause() {
-        currentState = timerStateCalculator.setPausedState(currentState)
+        currentState = timerStateSetter.setPausedState(currentState)
     }
 
     fun stop() {
         currentState = TimerState.Paused(0)
     }
 
-    fun getStringTimeRepresentation(): String {
+    fun convertTimeToString(): String {
         val passedTime = when (val currentState = currentState) {
             is TimerState.Paused -> currentState.passed
             is TimerState.Running -> timePassedCalculator.calculate(currentState)
