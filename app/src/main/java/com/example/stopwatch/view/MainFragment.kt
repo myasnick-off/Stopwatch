@@ -5,19 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.stopwatch.databinding.FragmentMainBinding
 import com.example.stopwatch.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
-    private val viewModel by lazy {
-        ViewModelProvider(this)[MainViewModel::class.java]
-    }
+    private val viewModel: MainViewModel by viewModel()
 
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
@@ -44,11 +42,11 @@ class MainFragment : Fragment() {
 
     private fun initView() {
 
-        CoroutineScope(Dispatchers.Main).launch {
-            viewModel.ticker.collect {
-                binding.textTime.text = it
+        viewModel.ticker
+            .onEach { time ->
+                binding.textTime.text = time
             }
-        }
+            .launchIn(CoroutineScope(Dispatchers.Main))
 
         binding.buttonStart.setOnClickListener {
             viewModel.start()

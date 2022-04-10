@@ -1,6 +1,6 @@
-package com.example.stopwatch.data
+package com.example.stopwatch.datasource
 
-class TimerProvider : ITimerProvider {
+class TimeProvider : ITimeProvider {
 
     override fun getCurrentTime(): Long {
         return System.currentTimeMillis()

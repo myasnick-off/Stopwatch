@@ -1,12 +1,12 @@
-package com.example.stopwatch.domain
+package com.example.stopwatch.utils
 
-import com.example.stopwatch.data.ITimerProvider
+import com.example.stopwatch.datasource.ITimeProvider
 import com.example.stopwatch.model.TimerState
 
-class TimePassedCalculator(private val timerProvider: ITimerProvider) {
+class TimePassedCalculator(private val timeProvider: ITimeProvider) {
 
     fun calculate(state: TimerState.Running): Long {
-        val currentTime = timerProvider.getCurrentTime()
+        val currentTime = timeProvider.getCurrentTime()
         val timePassedSinceStart = if (currentTime > state.startedAt) {
             currentTime - state.startedAt
         } else {

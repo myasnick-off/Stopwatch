@@ -1,21 +1,25 @@
-package com.example.stopwatch.domain
+package com.example.stopwatch.repository
 
-import com.example.stopwatch.data.ITimerProvider
+import com.example.stopwatch.datasource.ITimeProvider
 import com.example.stopwatch.model.TimerState
+import com.example.stopwatch.utils.TimePassedCalculator
 
 class TimerStateSetter(
-    private val timerProvider: ITimerProvider,
+    private val timeProvider: ITimeProvider,
     private val timePassedCalculator: TimePassedCalculator,
-) {
-    fun setRunningState(oldState: TimerState): TimerState.Running =
+) : StateSetter {
+    override fun setRunningState(oldState: TimerState): TimerState.Running =
         when (oldState) {
             is TimerState.Running -> oldState
             is TimerState.Paused -> {
-                TimerState.Running(startedAt = timerProvider.getCurrentTime(), passed = oldState.passed)
+                TimerState.Running(
+                    startedAt = timeProvider.getCurrentTime(),
+                    passed = oldState.passed
+                )
             }
         }
 
-    fun setPausedState(oldState: TimerState): TimerState.Paused =
+    override fun setPausedState(oldState: TimerState): TimerState.Paused =
         when (oldState) {
             is TimerState.Running -> {
                 val passedTime = timePassedCalculator.calculate(oldState)
